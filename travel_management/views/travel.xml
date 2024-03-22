@@ -1,0 +1,6 @@
+<odoo>
+    <data>
+        <menuitem id="travel_menu" name="Travel"/>
+        <menuitem id="travel_records_menu" parent="travel_menu" name="Travel" action="action_travel" sequence="5"/>
+    </data>
+</odoo>

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="report_patient_cards">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <!--Tablo yapısı için uygun ortamı hazırlar-->
+                <!--<t t-call="web.internal_layout">-->
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <br></br>
+                        <br></br>
+                        <div class="oe_structure"/>
+                        <div class="row">
+                            <div class="col-md-12" style="margin:auto;">
+                                <center>
+                                    <div class="col-md-12" style="margin:auto;">
+                                        <table class="wable table-condensed" style="border: 3px solid black !important;">
+                                            <tr>
+                                                <td width="40%">
+                                                    <center>
+                                                    <p style="text-align:center;padding-top:10px;">
+                                                        <img src="om_hospital,static/description/icon.png" height="120" border="1" width="120"/>
+                                                    </p>
+                                                    <p style="text-align:center;">
+                                                        <h2><strong><span t-field="doc.name"/></strong></h2>
+                                                    </p>
+                                                    </center>
+                                                </td>
+                                                <td width="60%">
+                                                    <table>
+                                                        <tr>
+                                                            <td>
+                                                                <p style="text-align:right;"><strong>Name:</strong></p>
+                                                                <p style="text-align:right;"><strong>Age:</strong></p>
+                                                                <p style="text-align:right;"><strong>Gender:</strong></p>
+                                                                <p style="text-align:right;"><strong>Reference:</strong></p>
+                                                                <p style="text-align:right;"><strong>Appointment Time:</strong></p>
+                                                            </td>
+                                                            <td>
+                                                                <p style="text-align:left;padding-left:10px;padding-right:10px;" t-field="doc.name"/>
+                                                                <p style="text-align:left;padding-left:10px;padding-right:10px;" t-field="doc.age"/>
+                                                                <p style="text-align:left;padding-left:10px;padding-right:10px;" t-field="doc.gender"/>
+                                                                <p style="text-align:left;padding-left:10px;padding-right:10px;" t-field="doc.ref"/>
+                                                                <p style="text-align:left;padding-left:10px;padding-right:10px;" t-field="doc.appointment_id.appointment_time"/>
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </center>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <template id="report_patient">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="om_hospital.report_patient_cards"/>
+            </t>
+        </t>
+    </template>
+</odoo>

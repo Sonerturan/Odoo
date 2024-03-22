@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!--noupdate="1" değeri modul güncellendiğinde bu yapıyı güncellemeyecektir (değişiklik olsa bile)-->
+    <data noupdate="1">
+        <!--forcecreate="0" silindiğinde yeniden oluşturulma durumu-->
+        <record id="patient_tag_vip" model="patient.tag" forcecreate="0">
+            <field name="name">VIP</field>
+        </record>
+
+        <record id="patient_tag_kid" model="patient.tag">
+            <field name="name">Kid</field>
+        </record>
+
+        <record id="patient_tag_adult" model="patient.tag">
+            <field name="name">Adult</field>
+        </record>
+
+        <record id="patient_tag_mr" model="patient.tag">
+            <field name="name">Mr</field>
+            <field name="active" eval="False"/>
+        </record>
+    </data>
+</odoo>

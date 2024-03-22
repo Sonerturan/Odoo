@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+
+    <!--Model Sayfası List Görünüm Oluşturma-->
+    <record id="view_hospital_patient_tree" model="ir.ui.view">
+        <field name="name">hospital.patient.tree</field>
+        <field name="model">hospital.patient</field>
+        <field name="arch" type="xml">
+            <tree export_xlsx="0">
+                <field name="name" string="Patient Name"/>
+                <field name="ref"/>
+                <field name="age" avg="Average Age"/>
+                <field name="appointment_count" sum="Total Appointment"/>
+                <field name="gender"/>
+                <field name="tag_ids" widget="many2many_tags" options="{'color_field':'color'}"/>
+            </tree>
+        </field>
+    </record>
+
+
+    <!--Model Ekleme ve Düzenleme Formu oluşturma-->
+    <record id="view_hospital_patient_form" model="ir.ui.view">
+        <field name="name">hospital.patient.form</field>
+        <field name="model">hospital.patient</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button string="Header Button"/>
+                    <button class="oe_highlight" string="Header Button2"/>
+                </header>
+                <sheet>
+                    <!--form sayfalarının üstünde bulunan yönlendirmeli akıllı stat butonlar için-->
+                    <div class="oe_button_box" name="button_box">
+                        <button class="oe_stat_button" type="object" name="action_view_appointments" widget="statinfo" icon="fa-star">
+                            <field string="Appointment" name="appointment_count" widget="statinfo"/>
+                        </button>
+                    </div>
+                    <div class="alert alert-info text-center p_form_header" role="alert"
+                         attrs="{'invisible':[('is_birthday', '=', False)]}">
+                        <a class="close" data-dismiss="alert" href="#">x</a>
+                        <div>
+                            <strong>Today is Birthday !</strong>
+                        </div>
+                        <div>Wish <field name="name" readonly="1"/>
+                        </div>
+                    </div>
+                    <div class="alert alert-warning text-center p_form_header" role="alert">
+                        <a class="close" data-dismiss="alert" href="#">x</a>
+                        <div>
+                            <strong>This is Alert Message !</strong>
+                        </div>
+                        <div>
+                            <field name="name" readonly="1"/>
+                        </div>
+                    </div>
+                    <div class="alert alert-danger text-center p_form_header" role="alert">
+                        <a class="close" data-dismiss="alert" href="#">x</a>
+                        <div>
+                            <strong>This is Alert Message !</strong>
+                        </div>
+                        <div>
+                            <field name="name" readonly="1"/>
+                        </div>
+                    </div>
+                    <field name="image" widget="image" class="oe_avatar"/>
+                    <div class="oe_title">
+                        <h4>
+                            <field name="ref" readonly="1"/>
+                        </h4>
+                        <h2>
+                            <!--class="oe_edit_only" sadece editleme anında bunu görünür yap-->
+                            <label for="name" string="Name" class="oe_edit_only"/>
+                            <field name="name"/>
+                        </h2>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="date_of_birth"/>
+                            <field name="calculated_age"/>
+                            <field name="is_birthday" invisible="1"/>
+                            <field name="appointment_id"/>
+                        </group>
+                        <group>
+                            <field name="age"/>
+                            <field name="gender" invisible="context.get('hide_gender')" widget="radio"/>
+                            <field name="tag_ids" widget="many2many_tags" options="{'color_field':'color'}"/>
+                            <!--<field name="tag_ids" widget="many2many_checkboxes" options="{'color_field':'color'}"/>-->
+                            <field name="active" invisible="1"/>
+                        </group>
+                    </group>
+                    <group string="Other Information" name="other_info">
+                        <group>
+                            <field name="parent" attrs="{'invisible':[('calculated_age', '&gt;=', 18)]}"/>
+                            <field name="marital_status" attrs="{'invisible':[('calculated_age', '&lt;=', 18)]}"/>
+                            <field name="partner_name" attrs="{'readonly':[('marital_status', '!=', 'married')],
+                            'required':[('marital_status', '=', 'married')]}"/>
+                        </group>
+                        <group>
+                            <field name="phone" widget="phone"/>
+                            <field name="email" widget="email"/>
+                            <field name="website" widget="url"/>
+                        </group>
+                    </group>
+                </sheet>
+                <!-- Chatter -->
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" groups="base.group_user"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!--Arama ve filtreleme-->
+    <record id="view_hospital_patient_search" model="ir.ui.view">
+        <field name="name">hospital.patient.search</field>
+        <field name="model">hospital.patient</field>
+        <field name="arch" type="xml">
+            <search>
+                <!--Çoklu Arama -->
+                <field name="name" string="Name | Referance"
+                       filter_domain="['|',('name','ilike',self),('ref','ilike',self)]"/>
+                <!--Tekli Arama -->
+                <field name="name" string="Name"/>
+                <field name="calculated_age" string="Calculated Age"/>
+                <field name="ref" string="Referance"/>
+                <!--Default Filter için filtre hazırlama -->
+                <filter name="filter_default" string="Default Filter"
+                        domain="['|',('gender','=','female'),('gender','=','male')]"/>
+                <!--Filtreleme Çoklu seçim-->
+                <filter name="filter_male" string="Male" domain="[('gender','=','male')]"/>
+                <filter name="filter_female" string="Female" domain="[('gender','=','female')]"/>
+                <!--Filtreleme Tekli Seçim-->
+                <separator/>
+                <filter name="filter_kids" string="Kids" domain="[('age','&lt;=',5)]"/>
+                <separator/>
+                <filter name="filter_archived" string="Archived" domain="[('active','=',False)]"/>
+                <!--Group By Ekleme-->
+                <group expand="0" string="Group By">
+                    <filter name="group_ny_gender" string="Gender" context="{'group_by':'gender'}"/>
+                </group>
+                <searchpanel>
+                    <field name="gender" select="multi" color="#32CD32" enable_counters="1" icon="fa-users"/>
+                </searchpanel>
+            </search>
+        </field>
+    </record>
+
+    <!--Window Action- Sayfa oluşturma-->
+    <record id="action_hospital_patient" model="ir.actions.act_window">
+        <field name="name">Patients</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.patient</field>
+        <field name="view_mode">tree,form</field>
+        <!--Otomatik Filtre atamak-->
+        <field name="context">{'search_default_filter_default':1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first patient !
+            </p>
+        </field>
+    </record>
+
+
+    <!--Bu menu action_hospital_patient dosyasına yönleneceği için önce dosyanın oluşturulması gerektiğinden dolayı bu işlemin arkasına alınmıştır.-->
+    <menuitem id="menu_patient"
+              name="Patients"
+              action="action_hospital_patient"
+              parent="menu_patient_master"
+              sequence="0"/>
+
+
+</odoo>
